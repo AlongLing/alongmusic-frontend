@@ -17,23 +17,38 @@
 </template>
 
 <script>
-import { fetchById, update } from '@/api/playlist'
+import { fetchById, update } from "@/api/playlist";
 export default {
-    data() {
+  data() {
     return {
-      playlist: {}
-    }
+      playlist: {},
+    };
   },
-    created() {
+  created() {
     fetchById({
-      id: this.$route.params.id
-    }).then(res => {
-      console.log(res)
-      this.playlist = res.data
-    })
+      id: this.$route.params.id,
+    }).then((res) => {
+      console.log(res);
+      this.playlist = res.data;
+    });
   },
   methods: {
-      
-  }
-}
+    onSubmit() {
+      update(this.playlist).then((res) => {
+        if (res.data.modified > 0) {         // 大于 0 表示有数据更新成功了
+          this.$message({
+            message: "更新成功",
+            type: "success",
+          });
+        } else {
+          this.$message.error("更新失败");
+        }
+        this.$router.push("/playlist/list");
+      });
+    },
+    onCancel() {
+      this.$router.push("/playlist/list");
+    },
+  },
+};
 </script>

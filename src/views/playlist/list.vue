@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { fetchList } from '@/api/playlist'
+import { fetchList, del } from '@/api/playlist'
 import scroll from '@/utils/scroll'
 
 export default {
@@ -37,7 +37,10 @@ export default {
     return {
       playlist: [],
       count: 50,
-      loading: false
+      loading: false,
+      // 删除歌单的对话框是否显示
+      delDialogVisible: false,
+      info: {}
     }
   },
   created() {
@@ -66,7 +69,26 @@ export default {
       this.$router.push(`/playlist/edit/${row._id}`)
     },
 
+    onDel(row) {
+      this.delDialogVisible = true
+      this.info.id = row._id
+    },
     
+    doDel() {
+      del({ id: this.info.id }).then(res => {
+        this.delDialogVisible = false
+        if (res.data.deleted > 0) {                // 当大于 0 的时候表示删除成功
+          this.playlist = []
+          this.getList()
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+        } else {
+          this.$message.error('删除失败')
+        }
+      })
+    }
   }
 }
 </script>
