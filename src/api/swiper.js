@@ -7,3 +7,12 @@ export function fetchList(){
         method: 'get'
     })
 }
+
+// 删除轮播图片
+export function del(params) {
+    return request({
+        params,
+        url: `${baseURL}/swiper/del`,
+        method: 'get',
+    })
+}
